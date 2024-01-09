@@ -3,8 +3,11 @@
 import express from "express";
 
 import watersController from "../../controllers/water.js";
+import authenticate from "../../middlewares/authenticate.js";
 
 export const watersRouter = express.Router();
+
+watersRouter.use(authenticate);
 
 watersRouter.get("/", watersController.getALL);
 
