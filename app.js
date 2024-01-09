@@ -8,6 +8,7 @@ import cors from "cors";
 import "dotenv/config";
 
 import { watersRouter } from "./routes/api/waters.js";
+import authRouter from "./routes/api/auth-router.js";
 
 // const contactsRouter = require("./routes/api/contacts");
 
@@ -19,6 +20,7 @@ app.use(logger(formatsLogger));
 app.use(cors());
 app.use(express.json());
 
+app.use("/api/auth", authRouter);
 app.use("/api/waters", watersRouter);
 
 app.use((req, res) => {
