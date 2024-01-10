@@ -1,5 +1,6 @@
 import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
+import gravatar from "gravatar";
 
 import User from "../models/users.js";
 import { ctrlWrapper } from "../helpers/ctrlWrapper.js";
@@ -9,6 +10,7 @@ const { JWT_SECRET } = process.env;
 
 const signup = async (req, res) => {
   const { email, password } = req.body;
+  const avatarURL = gravatar.url(email, { s: "100", r: "x", d: "retro" }, true);
   const user = await User.findOne({ email });
   if (user) {
     throw HttpError(409, "Email already used");
@@ -19,6 +21,7 @@ const signup = async (req, res) => {
   const newUser = await User.create({
     ...req.body,
     password: hashPassword,
+    avatarURL,
   });
 
   res.status(201).json({
