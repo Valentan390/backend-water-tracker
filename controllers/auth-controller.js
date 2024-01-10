@@ -1,10 +1,13 @@
 import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
 import gravatar from "gravatar";
+import fs from "fs/promises";
+import jimp from "jimp";
 
 import User from "../models/users.js";
 import { ctrlWrapper } from "../helpers/ctrlWrapper.js";
 import { HttpError } from "../helpers/HttpError.js";
+import cloudinary from "../helpers/cloudinary.js";
 
 const { JWT_SECRET } = process.env;
 
@@ -61,11 +64,6 @@ const signin = async (req, res) => {
   });
 };
 
-const getCurrent = async (req, res) => {
-  const { username, email } = req.user;
-  res.json({ username, email });
-};
-
 const signout = async (req, res) => {
   const { _id } = req.user;
   await User.findByIdAndUpdate(_id, { token: "" });
@@ -78,6 +76,5 @@ const signout = async (req, res) => {
 export default {
   signup: ctrlWrapper(signup),
   signin: ctrlWrapper(signin),
-  getCurrent: ctrlWrapper(getCurrent),
   signout: ctrlWrapper(signout),
 };
