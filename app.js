@@ -1,7 +1,3 @@
-// const express = require('express')
-// const logger = require('morgan')
-// const cors = require('cors')
-
 import express from "express";
 import logger from "morgan";
 import cors from "cors";
@@ -9,8 +5,7 @@ import "dotenv/config";
 
 import { watersRouter } from "./routes/api/waters.js";
 import authRouter from "./routes/api/auth-router.js";
-
-// const contactsRouter = require("./routes/api/contacts");
+import userRouter from "./routes/api/user-router.js";
 
 export const app = express();
 
@@ -21,6 +16,7 @@ app.use(cors());
 app.use(express.json());
 
 app.use("/api/auth", authRouter);
+app.use("/api/users", userRouter);
 app.use("/api/waters", watersRouter);
 
 app.use((req, res) => {
@@ -30,5 +26,3 @@ app.use((req, res) => {
 app.use((err, req, res, next) => {
   res.status(500).json({ message: err.message });
 });
-
-// module.exports = app;
