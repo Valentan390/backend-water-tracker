@@ -1,28 +1,40 @@
 import { Schema, model } from "mongoose";
+import Joi from "joi";
+import { handleSaveError, addUpdateSetting } from "./hooks.js";
+const waterSchema = new Schema(
+  {
+    milliliters: {
+      type: Number,
+      required: [true, "Set a count water"],
+      min: 1,
+      max: 1500,
+    },
+    time: {
+      type: Number,
+      required: true,
+      max: 5000,
+    },
 
-const waterSchema = new Schema({
-  name: {
-    type: String,
-    required: [true, "Set name for contact"],
+    owner: {
+      type: Schema.Types.ObjectId,
+      ref: "user",
+      required: true,
+    },
   },
-  // email: {
-  //   type: String,
-  // },
-  // phone: {
-  //   type: String,
-  // },
-  // favorite: {
-  //   type: Boolean,
-  //   default: false,
-  // },
-
-  owner: {
-    type: Schema.Types.ObjectId,
-    ref: "user",
-    required: true,
-  },
+  { versionKey: false, timestamps: true }
+);
+waterSchema.post("save", handleSaveError);
+waterSchema.pre("findOneAndUpdate", addUpdateSetting);
+waterSchema.post("findOneAndUpdate", handleSaveError);
+export const waterAddSchema = Joi.object({
+  milliliters: Joi.string(),
+  time: Joi.string(),
 });
 
-const Contact = model("waters", waterSchema);
+export const waterUpdateSchema = Joi.object({
+  milliliters: Joi.string(),
+  time: Joi.string(),
+});
 
-export default Contact;
+const Water = model("water", waterSchema);
+export default Water;
