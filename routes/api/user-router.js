@@ -12,8 +12,9 @@ userRouter.patch(
   "/avatars",
   authenticate,
   upload.single("avatar"),
-
   userController.updateUserAvatars
 );
+
+userRouter.put("/update", authenticate, userController.updateUser);
 
 export default userRouter;

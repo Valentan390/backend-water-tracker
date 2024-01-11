@@ -1,13 +1,10 @@
 import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
 import gravatar from "gravatar";
-import fs from "fs/promises";
-import jimp from "jimp";
 
 import User from "../models/users.js";
 import { ctrlWrapper } from "../helpers/ctrlWrapper.js";
 import { HttpError } from "../helpers/HttpError.js";
-import cloudinary from "../helpers/cloudinary.js";
 
 const { JWT_SECRET } = process.env;
 
@@ -58,8 +55,12 @@ const signin = async (req, res) => {
   res.json({
     token,
     user: {
+      //   _id: user._id,
       email: user.email,
-      subscription: user.subscription,
+      username: user.username,
+      avatarURL: user.avatarURL,
+      userdailynorma: user.userdailynorma,
+      gender: user.gender,
     },
   });
 };
