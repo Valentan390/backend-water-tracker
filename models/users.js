@@ -24,7 +24,7 @@ const userSchema = new Schema(
     },
     gender: {
       type: String,
-      default: "",
+      default: "woman",
     },
     dailyNorma: {
       type: String,
