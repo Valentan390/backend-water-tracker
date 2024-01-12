@@ -26,7 +26,7 @@ const userSchema = new Schema(
       type: String,
       default: "",
     },
-    userdailynorma: {
+    dailyNorma: {
       type: String,
       default: "2L",
     },
