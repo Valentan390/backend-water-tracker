@@ -3,9 +3,9 @@ import logger from "morgan";
 import cors from "cors";
 import "dotenv/config";
 
-import { watersRouter } from "./routes/api/waters.js";
 import authRouter from "./routes/api/auth-router.js";
 import userRouter from "./routes/api/user-router.js";
+import watersRouter from "./routes/api/water-router.js";
 
 export const app = express();
 
