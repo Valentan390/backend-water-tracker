@@ -55,11 +55,10 @@ const signin = async (req, res) => {
   res.json({
     token,
     user: {
-      //   _id: user._id,
       email: user.email,
       username: user.username,
       avatarURL: user.avatarURL,
-      userdailynorma: user.userdailynorma,
+      dailyNorma: user.dailyNorma,
       gender: user.gender,
     },
   });
