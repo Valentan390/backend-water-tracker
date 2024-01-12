@@ -8,8 +8,8 @@ import { ctrlWrapper } from "../helpers/ctrlWrapper.js";
 import { HttpError } from "../helpers/HttpError.js";
 
 const getCurrent = async (req, res) => {
-  const { username, email, avatarURL, userdailynorma, gender } = req.user;
-  res.json({ username, email, avatarURL, userdailynorma, gender });
+  const { username, email, avatarURL, dailyNorma, gender, token } = req.user;
+  res.json({ username, email, avatarURL, dailyNorma, gender, token });
 };
 
 const updateUserAvatars = async (req, res) => {
