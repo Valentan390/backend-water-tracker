@@ -15,6 +15,12 @@ userRouter.patch(
   userController.updateUserAvatars
 );
 
-userRouter.put("/update", authenticate, userController.updateUser);
+userRouter.patch("/update", authenticate, userController.updateUser);
+
+userRouter.patch(
+  "/dailynorm",
+  authenticate,
+  userController.updateUserDailyNorm
+);
 
 export default userRouter;
