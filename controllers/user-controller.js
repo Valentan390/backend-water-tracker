@@ -8,8 +8,8 @@ import { ctrlWrapper } from "../helpers/ctrlWrapper.js";
 import { HttpError } from "../helpers/HttpError.js";
 
 const getCurrent = async (req, res) => {
-  const { username, email, avatarURL, dailyNorma, gender } = req.user;
-  res.json({ username, email, avatarURL, dailyNorma, gender });
+  const { username, email, avatarURL, dailyNorm, gender } = req.user;
+  res.json({ username, email, avatarURL, dailyNorm, gender });
 };
 
 const updateUserAvatars = async (req, res) => {
@@ -51,15 +51,26 @@ const updateUserAvatars = async (req, res) => {
 };
 
 const updateUser = async (req, res) => {
-  const { _id } = req.user;
-  const { password } = req.body;
+  const { _id, password } = req.user;
+  const { oldPassword, newPassword } = req.body;
+
+  let isPasswordMatch = true;
+
+  if (oldPassword && newPassword) {
+    isPasswordMatch = await bcrypt.compare(oldPassword, password);
+
+    if (!isPasswordMatch) {
+      throw HttpError(400, "Old password is incorrect");
+    }
+  }
 
   const updateFields = {
     ...req.body,
   };
 
-  if (updateFields.password) {
-    updateFields.password = await bcrypt.hash(password, 10);
+  if (updateFields.newPassword) {
+    updateFields.password = await bcrypt.hash(newPassword, 10);
+    delete updateFields.newPassword;
   }
 
   const result = await User.findByIdAndUpdate(_id, updateFields);
@@ -71,7 +82,7 @@ const updateUser = async (req, res) => {
       email: result.email,
       username: result.username,
       avatarURL: result.avatarURL,
-      dailyNorma: result.dailyNorma,
+      dailyNorm: result.dailyNorm,
       gender: result.gender,
     },
   });
@@ -79,10 +90,10 @@ const updateUser = async (req, res) => {
 
 const updateUserDailyNorm = async (req, res) => {
   const { _id } = req.user;
-  const { dailyNorma } = req.body;
+  const { dailyNorm } = req.body;
 
   const updatedUser = await User.findByIdAndUpdate(_id, {
-    dailyNorma,
+    dailyNorm,
   });
 
   if (!updatedUser) {
@@ -90,7 +101,7 @@ const updateUserDailyNorm = async (req, res) => {
   }
 
   res.json({
-    dailyNorma: updatedUser.dailyNorma,
+    dailyNorm: updatedUser.dailyNorm,
   });
 };
 
