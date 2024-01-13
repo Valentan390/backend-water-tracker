@@ -8,8 +8,8 @@ import { ctrlWrapper } from "../helpers/ctrlWrapper.js";
 import { HttpError } from "../helpers/HttpError.js";
 
 const getCurrent = async (req, res) => {
-  const { username, email, avatarURL, dailyNorma, gender, token } = req.user;
-  res.json({ username, email, avatarURL, dailyNorma, gender, token });
+  const { username, email, avatarURL, dailyNorma, gender } = req.user;
+  res.json({ username, email, avatarURL, dailyNorma, gender });
 };
 
 const updateUserAvatars = async (req, res) => {
@@ -68,13 +68,29 @@ const updateUser = async (req, res) => {
   }
   res.json({
     result: {
-      _id: result._id,
       email: result.email,
       username: result.username,
       avatarURL: result.avatarURL,
-      userdailynorma: result.userdailynorma,
+      dailyNorma: result.dailyNorma,
       gender: result.gender,
     },
+  });
+};
+
+const updateUserDailyNorm = async (req, res) => {
+  const { _id } = req.user;
+  const { dailyNorma } = req.body;
+
+  const updatedUser = await User.findByIdAndUpdate(_id, {
+    dailyNorma,
+  });
+
+  if (!updatedUser) {
+    throw HttpError(404, "Not found");
+  }
+
+  res.json({
+    dailyNorma: updatedUser.dailyNorma,
   });
 };
 
@@ -82,4 +98,5 @@ export default {
   getCurrent: ctrlWrapper(getCurrent),
   updateUserAvatars: ctrlWrapper(updateUserAvatars),
   updateUser: ctrlWrapper(updateUser),
+  updateUserDailyNorm: ctrlWrapper(updateUserDailyNorm),
 };
