@@ -26,9 +26,9 @@ const userSchema = new Schema(
       type: String,
       default: "woman",
     },
-    dailyNorma: {
-      type: String,
-      default: "2L",
+    dailyNorm: {
+      type: Number,
+      default: 2000,
     },
     token: {
       type: String,
@@ -59,16 +59,28 @@ userSchema.post("findOneAndUpdate", handleSaveError);
 export const userSignupSchema = Joi.object({
   username: Joi.string().min(3).required(),
   email: Joi.string().pattern(emailRegexp).required(),
-  password: Joi.string().min(8).required(),
+  password: Joi.string().min(8).max(64).required(),
 });
 
 export const userSigninSchema = Joi.object({
   email: Joi.string().pattern(emailRegexp).required(),
-  password: Joi.string().min(6).required(),
+  password: Joi.string().min(8).max(64).required(),
 });
 
 export const userEmailSchema = Joi.object({
   email: Joi.string().pattern(emailRegexp).required(),
+});
+
+export const userUpdateSchema = Joi.object({
+  username: Joi.string().min(3),
+  email: Joi.string().pattern(emailRegexp),
+  newPassword: Joi.string().min(8).max(64),
+  oldPassword: Joi.string().min(8).max(64),
+  gender: Joi.string().valid("male", "female"),
+});
+
+export const userDailyNormaSchema = Joi.object({
+  dailyNorm: Joi.number().min(1).max(1500),
 });
 
 const User = model("user", userSchema);
