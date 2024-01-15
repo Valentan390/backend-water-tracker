@@ -8,8 +8,8 @@ import { ctrlWrapper } from "../helpers/ctrlWrapper.js";
 import { HttpError } from "../helpers/HttpError.js";
 
 const getCurrent = async (req, res) => {
-  const { username, email, avatarURL, dailyNorm, gender } = req.user;
-  res.json({ username, email, avatarURL, dailyNorm, gender });
+  const { username, email, avatarURL, dailyNorma, gender } = req.user;
+  res.json({ username, email, avatarURL, dailyNorma, gender });
 };
 
 const updateUserAvatars = async (req, res) => {
@@ -82,7 +82,7 @@ const updateUser = async (req, res) => {
       email: result.email,
       username: result.username,
       avatarURL: result.avatarURL,
-      dailyNorm: result.dailyNorm,
+      dailyNorma: result.dailyNorma,
       gender: result.gender,
     },
   });
@@ -90,10 +90,10 @@ const updateUser = async (req, res) => {
 
 const updateUserDailyNorm = async (req, res) => {
   const { _id } = req.user;
-  const { dailyNorm } = req.body;
+  const { dailyNorma } = req.body;
 
   const updatedUser = await User.findByIdAndUpdate(_id, {
-    dailyNorm,
+    dailyNorma,
   });
 
   if (!updatedUser) {
@@ -101,7 +101,7 @@ const updateUserDailyNorm = async (req, res) => {
   }
 
   res.json({
-    dailyNorm: updatedUser.dailyNorm,
+    dailyNorma: updatedUser.dailyNorma,
   });
 };
 

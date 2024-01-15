@@ -15,6 +15,7 @@ const userSchema = new Schema(
       type: String,
       required: [true, "Set password for user"],
       minlength: 8,
+      maxlength: 64,
     },
     email: {
       type: String,
@@ -26,7 +27,7 @@ const userSchema = new Schema(
       type: String,
       default: "woman",
     },
-    dailyNorm: {
+    dailyNorma: {
       type: Number,
       default: 2000,
     },
@@ -67,9 +68,9 @@ export const userSigninSchema = Joi.object({
   password: Joi.string().min(8).max(64).required(),
 });
 
-export const userEmailSchema = Joi.object({
-  email: Joi.string().pattern(emailRegexp).required(),
-});
+// export const userEmailSchema = Joi.object({
+//   email: Joi.string().pattern(emailRegexp).required(),
+// });
 
 export const userUpdateSchema = Joi.object({
   username: Joi.string().min(3),
@@ -80,7 +81,7 @@ export const userUpdateSchema = Joi.object({
 });
 
 export const userDailyNormaSchema = Joi.object({
-  dailyNorm: Joi.number().min(1).max(1500),
+  dailyNorma: Joi.number().min(1).max(1500).required(),
 });
 
 const User = model("user", userSchema);

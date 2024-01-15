@@ -8,7 +8,7 @@ import authenticate from "../../middlewares/authenticate.js";
 import {
   userSignupSchema,
   userSigninSchema,
-  userEmailSchema,
+  //   userEmailSchema,
 } from "../../models/users.js";
 
 const authRouter = express.Router();
