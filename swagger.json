@@ -7,7 +7,7 @@
   },
   "consumes": ["application/json", "multipart/form-data"],
   "produces": ["application/json", "multipart/form-data"],
-  "servers": [{ "url": "http://localhost:3001" }],
+  "servers": [{ "url": "https://backend-water-tracker.onrender.com" }],
   "tags": [
     {
       "name": "Auth",
@@ -51,7 +51,7 @@
             }
           },
           "400": {
-            "description": "Bad request (invalid request body)",
+            "description": "Bad request | Body must have fields",
             "content": {}
           },
           "404": {
@@ -93,7 +93,7 @@
             }
           },
           "400": {
-            "description": "Bad request (invalid request body)",
+            "description": "Bad request | Body must have fields",
             "content": {}
           },
           "401": {
@@ -125,7 +125,7 @@
             }
           },
           "401": {
-            "description": "Unauthorized (invalid access token)"
+            "description": "Unauthorized | Authorization header not defined | user not found | "
           }
         }
       }
@@ -142,14 +142,13 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/GetCurrentRequest"
+                  "$ref": "#/components/schemas/GetCurrentResponse"
                 }
               }
             }
           },
           "401": {
-            "description": "Unauthorized",
-            "content": {}
+            "description": "Unauthorized | Authorization header not defined | user not found"
           }
         }
       }
@@ -186,7 +185,8 @@
                     "avatarURL": {
                       "type": "string",
                       "format": "uri",
-                      "example": "example_avatar.png"
+                      "example": "example_avatar.png",
+                      "description": "URL of the user's avatar"
                     }
                   }
                 }
@@ -194,8 +194,7 @@
             }
           },
           "401": {
-            "description": "Unauthorized",
-            "content": {}
+            "description": "Unauthorized | Authorization header not defined | user not found"
           }
         }
       }
@@ -218,7 +217,7 @@
           }
         },
         "responses": {
-          "201": {
+          "200": {
             "description": "Succesful operation",
             "content": {
               "application/json": {
@@ -250,7 +249,8 @@
           "username": {
             "type": "string",
             "description": "User's username",
-            "example": "username12345"
+            "example": "username12345",
+            "minLength": 3
           },
           "email": {
             "type": "string",
@@ -260,7 +260,9 @@
           "password": {
             "type": "string",
             "description": "User's password",
-            "example": "pass12345"
+            "example": "pass12345",
+            "minLength": 8,
+            "maxLength": 64
           }
         }
       },
@@ -291,7 +293,9 @@
           "password": {
             "type": "string",
             "description": "User's password",
-            "example": "pass12345"
+            "example": "pass12345",
+            "minLength": 8,
+            "maxLength": 64
           }
         }
       },
@@ -318,7 +322,7 @@
               "avatarURL": {
                 "type": "string",
                 "description": "URL of the user's avatar",
-                "example": "avatar.png"
+                "example": "example_avatar.png"
               },
               "dailyNorma": {
                 "type": "string",
@@ -339,11 +343,11 @@
         "properties": {
           "message": {
             "type": "string",
-            "description": "Signout success"
+            "example": "Signout succes"
           }
         }
       },
-      "GetCurrentRequest": {
+      "GetCurrentResponse": {
         "type": "object",
         "properties": {
           "username": {
@@ -359,7 +363,7 @@
           "avatarURL": {
             "type": "string",
             "description": "URL of the user's avatar",
-            "example": "avatar.png"
+            "example": "example_avatar.png"
           },
           "dailyNorma": {
             "type": "string",
@@ -369,7 +373,8 @@
           "gender": {
             "type": "string",
             "description": "User's gender",
-            "example": "woman"
+            "example": "woman",
+            "enum": ["woman", "man"]
           }
         }
       },
@@ -423,19 +428,23 @@
           },
           "username": {
             "type": "string",
-            "example": "username12345"
+            "example": "example_username12345",
+            "description": "User's username"
           },
           "avatarURL": {
             "type": "string",
             "description": "URL of the user's avatar",
-            "example": "avatar.png"
+            "example": "example_avatar.png"
           },
-          "dailyNorm": {
-            "type": "string"
+          "dailyNorma": {
+            "type": "string",
+            "description": "User's daily norma",
+            "example": "Some value"
           },
           "gender": {
             "type": "string",
-            "enum": ["woman", "man"]
+            "enum": ["woman", "man"],
+            "description": "User's gender"
           }
         }
       }
