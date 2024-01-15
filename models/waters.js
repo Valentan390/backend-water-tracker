@@ -15,11 +15,11 @@ const waterSchema = new Schema(
       // max: 5000,
     },
 
-    // owner: {
-    //   type: Schema.Types.ObjectId,
-    //   ref: "user",
-    //   required: true,
-    // },
+    owner: {
+      type: Schema.Types.ObjectId,
+      ref: "users",
+      required: true,
+    },
   },
   { versionKey: false, timestamps: true }
 );

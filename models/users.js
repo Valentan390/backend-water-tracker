@@ -77,7 +77,7 @@ export const userUpdateSchema = Joi.object({
   email: Joi.string().pattern(emailRegexp),
   newPassword: Joi.string().min(8).max(64),
   oldPassword: Joi.string().min(8).max(64),
-  gender: Joi.string().valid("male", "female"),
+  gender: Joi.string().valid("woman", "man"),
 });
 
 export const userDailyNormaSchema = Joi.object({
