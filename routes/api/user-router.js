@@ -13,7 +13,7 @@ userRouter.get("/current", authenticate, userController.getCurrent);
 userRouter.patch(
   "/avatars",
   authenticate,
-  upload.single("avatarURL"),
+  upload.single("avatar"),
   userController.updateUserAvatars
 );
 
