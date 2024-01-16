@@ -84,6 +84,10 @@ export const userDailyNormaSchema = Joi.object({
   dailyNorma: Joi.number().min(1).max(1500).required(),
 });
 
+// const avatarUpdateValidation = Joi.object({
+//   avatar: Joi.any().required(),
+// });
+
 const User = model("user", userSchema);
 
 export default User;
