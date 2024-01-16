@@ -30,7 +30,7 @@ const updateUserAvatars = async (req, res) => {
 
   await fs.unlink(req.file.path);
 
-  const { url: resizedPoster } = await cloudinary.uploader.upload(
+  const { secure_url: resizedPoster } = await cloudinary.uploader.upload(
     resizedPosterPath,
     {
       folder: "avatars",

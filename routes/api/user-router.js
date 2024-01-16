@@ -8,18 +8,18 @@ import { isEmptyBody, validateBody } from "../../middlewares/validateBody.js";
 
 const userRouter = express.Router();
 
-userRouter.get("/current", authenticate, userController.getCurrent);
+userRouter.use(authenticate);
+
+userRouter.get("/current", userController.getCurrent);
 
 userRouter.patch(
   "/avatars",
-  authenticate,
-  upload.single("avatarURL"),
+  upload.single("avatar"),
   userController.updateUserAvatars
 );
 
 userRouter.patch(
   "/update",
-  authenticate,
   isEmptyBody,
   validateBody(userUpdateSchema),
   userController.updateUser
@@ -27,7 +27,6 @@ userRouter.patch(
 
 userRouter.patch(
   "/dailynorm",
-  authenticate,
   isEmptyBody,
   validateBody(userDailyNormaSchema),
   userController.updateUserDailyNorm
