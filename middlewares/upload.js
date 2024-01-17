@@ -18,11 +18,19 @@ const limits = {
   fileSize: 1024 * 1024 * 5,
 };
 
+const allowedExtensions = ["jpeg", "jpg", "png"];
+
 const fileFilter = (req, file, cb) => {
-  const extention = file.originalname.split(".").pop();
-  if (extention === "exe") {
-    cb(HttpError(400, "Cannot save file with .exe extention"));
+  const extension = file.originalname.split(".").pop().toLowerCase();
+
+  if (extension === "exe") {
+    cb(HttpError(400, "Cannot save file with .exe extension"));
   }
+
+  if (!allowedExtensions.includes(extension)) {
+    return cb(HttpError(400, `Unsupported file extension: ${extension}`));
+  }
+
   cb(null, true);
 };
 
