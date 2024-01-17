@@ -33,7 +33,7 @@ waterSchema.pre("findOneAndUpdate", addUpdateSetting);
 waterSchema.post("findOneAndUpdate", handleSaveError);
 
 export const waterVolumeAddSchema = Joi.object({
-  waterVolume: Joi.number().min(1).max(500).required(),
+  waterVolume: Joi.number().min(1).max(5000).required(),
   date: Joi.string().pattern(dateRegexp).required(),
 });
 
