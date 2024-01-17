@@ -7,7 +7,7 @@
   },
   "consumes": ["application/json", "multipart/form-data"],
   "produces": ["application/json", "multipart/form-data"],
-  "servers": [{ "url": "https://backend-water-tracker.onrender.com" }],
+  "servers": [{ "url": "http://localhost:3001" }],
   "tags": [
     {
       "name": "Auth",
@@ -228,10 +228,90 @@
             }
           },
           "400": {
-            "description": "Bad Request"
+            "description": "Bad Request | Body must have fields | Old password is incorrect"
           },
           "401": {
-            "description": "Unauthorized"
+            "description": "Unauthorized | Authorization header not defined | user not found"
+          },
+          "404": {
+            "description": "Not Found"
+          }
+        }
+      }
+    },
+    "/api/users/dailynorm": {
+      "patch": {
+        "tags": ["User"],
+        "summary": "Update the daily water intake norm",
+        "parameters": [],
+        "security": [{ "Bearer": [] }],
+        "requestBody": {
+          "description": "Your new daily water intake norm in format string",
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/UpdateDailyNormaRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Succesful operation",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/UpdateDailyNormaResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request | Body must have fields"
+          },
+          "401": {
+            "description": "Unauthorized | Authorization header not defined "
+          },
+          "404": {
+            "description": "Not Found"
+          }
+        }
+      }
+    },
+    "/api/waters/": {
+      "post": {
+        "tags": ["Water"],
+        "summary": "Post water intake",
+        "parameters": [],
+        "security": [{ "Bearer": [] }],
+        "requestBody": {
+          "description": "Your new daily water intake norm in format string",
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/PostWaterRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Succesful operation",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request | Body must have fields"
+          },
+          "401": {
+            "description": "Unauthorized | Authorization header not defined "
           },
           "404": {
             "description": "Not Found"
@@ -325,9 +405,9 @@
                 "example": "example_avatar.png"
               },
               "dailyNorma": {
-                "type": "string",
+                "type": "number",
                 "description": "User's daily norma",
-                "example": "Some value"
+                "example": 100
               },
               "gender": {
                 "type": "string",
@@ -366,9 +446,9 @@
             "example": "example_avatar.png"
           },
           "dailyNorma": {
-            "type": "string",
+            "type": "number",
             "description": "User's daily norma",
-            "example": "Some value"
+            "example": 100
           },
           "gender": {
             "type": "string",
@@ -393,7 +473,7 @@
           "username": {
             "type": "string",
             "description": "New username",
-            "example": "newexample1234",
+            "example": "new_example1234",
             "minLength": 3
           },
           "email": {
@@ -437,14 +517,48 @@
             "example": "example_avatar.png"
           },
           "dailyNorma": {
-            "type": "string",
+            "type": "number",
             "description": "User's daily norma",
-            "example": "Some value"
+            "example": 100
           },
           "gender": {
             "type": "string",
             "enum": ["woman", "man"],
             "description": "User's gender"
+          }
+        }
+      },
+      "UpdateDailyNormaRequest": {
+        "type": "object",
+        "properties": {
+          "dailyNorma": {
+            "type": "number",
+            "description": "User's daily norma",
+            "example": 200,
+            "minimum": 1,
+            "maximum": 1500
+          }
+        }
+      },
+      "UpdateDailyNormaResponse": {
+        "type": "object",
+        "properties": {
+          "dailyNorma": {
+            "type": "number",
+            "example": 200
+          }
+        }
+      },
+      "PostWaterRequest": {
+        "type": "object",
+        "properties": {
+          "milliliters": {
+            "type": "string",
+            "example": 200
+          },
+          "time": {
+            "type": "string",
+            "example": 200
           }
         }
       }
