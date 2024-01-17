@@ -3,29 +3,42 @@ import { validateBody, isEmptyBody } from "../../middlewares/validateBody.js";
 import watersController from "../../controllers/water-controller.js";
 import authenticate from "../../middlewares/authenticate.js";
 import isValidId from "../../middlewares/isValidId.js";
-import { waterAddSchema, waterUpdateSchema } from "../../models/waters.js";
+import {
+  waterVolumeAddSchema,
+  waterVolumeUpdateSchema,
+  userWaterMonthShema,
+} from "../../models/waters.js";
 
 export const watersRouter = express.Router();
 
 watersRouter.use(authenticate);
 
+watersRouter.get("/userwaterday", watersController.waterUserDay);
+
+watersRouter.get(
+  "/userwatermonth",
+  isEmptyBody,
+  validateBody(userWaterMonthShema),
+  watersController.waterUserMonth
+);
+
 watersRouter.post(
   "/",
   isEmptyBody,
-  validateBody(waterAddSchema),
+  validateBody(waterVolumeAddSchema),
   watersController.addWater
 );
 
 watersRouter.patch(
-  "/:id",
+  "/:waterId",
   isValidId,
   isEmptyBody,
-  validateBody(waterUpdateSchema),
+  validateBody(waterVolumeUpdateSchema),
   watersController.updateWaterById
 );
 
-watersRouter.delete("/:id", isValidId, watersController.deleteWaterById);
+watersRouter.delete("/:waterId", isValidId, watersController.deleteWaterById);
 
-// -----------------------------------------
-watersRouter.get("/", watersController.getAllWaters);
+watersRouter.get("/", watersController.getAll);
+
 export default watersRouter;
