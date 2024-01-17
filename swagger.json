@@ -7,7 +7,7 @@
   },
   "consumes": ["application/json", "multipart/form-data"],
   "produces": ["application/json", "multipart/form-data"],
-  "servers": [{ "url": "http://localhost:3001" }],
+  "servers": [{ "url": "https://backend-water-tracker.onrender.com" }],
   "tags": [
     {
       "name": "Auth",
@@ -279,19 +279,54 @@
         }
       }
     },
-    "/api/waters/": {
-      "post": {
+    "/api/waters/userwaterday": {
+      "get": {
         "tags": ["Water"],
-        "summary": "Post water intake",
+        "summary": "Get amount of water consumed today",
+        "parameters": [],
+        "security": [{ "Bearer": [] }],
+        "responses": {
+          "200": {
+            "description": "Succesful operation",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "properties": {
+                    "percentDailyNormaUser": {
+                      "type": "number",
+                      "example": 200
+                    },
+                    "userWaterDay": {
+                      "type": "number",
+                      "example": 200
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized | Authorization header not defined | user not found "
+          },
+          "404": {
+            "description": "Not Found"
+          }
+        }
+      }
+    },
+    "/api/waters/userwatermonth": {
+      "get": {
+        "tags": ["Water"],
+        "summary": "Get amount of consumed water for the selected month",
         "parameters": [],
         "security": [{ "Bearer": [] }],
         "requestBody": {
-          "description": "Your new daily water intake norm in format string",
+          "description": "Selected year and month",
           "required": true,
           "content": {
             "application/json": {
               "schema": {
-                "$ref": "#/components/schemas/PostWaterRequest"
+                "$ref": "#/components/schemas/WaterMonthRequest"
               }
             }
           }
@@ -302,7 +337,50 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/"
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/WaterMonthResponse"
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request | Body must have fields "
+          },
+          "401": {
+            "description": "Unauthorized | Authorization header not defined | user not found"
+          },
+          "404": {
+            "description": "Not Found"
+          }
+        }
+      }
+    },
+    "/api/waters/": {
+      "post": {
+        "tags": ["Water"],
+        "summary": "Add water data",
+        "parameters": [],
+        "security": [{ "Bearer": [] }],
+        "requestBody": {
+          "description": "Adds water data for a user",
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/AddWaterRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Succesful operation",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AddWaterResponse"
                 }
               }
             }
@@ -311,7 +389,7 @@
             "description": "Bad Request | Body must have fields"
           },
           "401": {
-            "description": "Unauthorized | Authorization header not defined "
+            "description": "Unauthorized | Authorization header not defined | user not found"
           },
           "404": {
             "description": "Not Found"
@@ -530,6 +608,7 @@
       },
       "UpdateDailyNormaRequest": {
         "type": "object",
+        "required": ["dailyNorma"],
         "properties": {
           "dailyNorma": {
             "type": "number",
@@ -549,16 +628,73 @@
           }
         }
       },
-      "PostWaterRequest": {
+      "WaterMonthRequest": {
+        "type": "object",
+        "required": ["year", "month"],
+        "properties": {
+          "year": {
+            "type": "string",
+            "pattern": "^(19|20)\\d{2}$",
+            "example": "2024"
+          },
+          "month": {
+            "type": "string",
+            "pattern": "^(0[1-9]|1[0-2])$",
+            "example": "01"
+          }
+        }
+      },
+      "WaterMonthResponse": {
         "type": "object",
         "properties": {
-          "milliliters": {
+          "date": {
             "type": "string",
-            "example": 200
+            "format": "date"
           },
-          "time": {
+          "dailyNorm": {
+            "type": "number"
+          },
+          "percentDailyNorm": {
+            "type": "number"
+          },
+          "consumptionCount": {
+            "type": "integer"
+          }
+        }
+      },
+      "AddWaterRequest": {
+        "type": "object",
+        "required": ["waterVolume", "date"],
+        "properties": {
+          "waterVolume": {
+            "type": "number",
+            "minimum": 1,
+            "maximum": 500
+          },
+          "date": {
             "type": "string",
-            "example": 200
+            "example": "2024-01-17T08:30:45.123Z",
+            "pattern": "^d{4}-d{2}-d{2}Td{2}:d{2}:d{2}.d{3}Z$",
+            "description": "The date and time of the water data"
+          }
+        }
+      },
+      "AddWaterResponse": {
+        "type": "object",
+        "properties": {
+          "waterVolume": {
+            "type": "number",
+            "minimum": 1,
+            "maximum": 500
+          },
+          "date": {
+            "type": "string",
+            "example": "2024-01-17T08:30:45.123Z",
+            "pattern": "^d{4}-d{2}-d{2}Td{2}:d{2}:d{2}.d{3}Z$"
+          },
+          "owner": {
+            "type": "string",
+            "description": "The owner's ID"
           }
         }
       }
