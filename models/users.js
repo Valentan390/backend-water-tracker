@@ -81,7 +81,7 @@ export const userUpdateSchema = Joi.object({
 });
 
 export const userDailyNormaSchema = Joi.object({
-  dailyNorma: Joi.number().min(1).max(1500).required(),
+  dailyNorma: Joi.number().min(1).max(15000).required(),
 });
 
 // const avatarUpdateValidation = Joi.object({

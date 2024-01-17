@@ -38,7 +38,7 @@ export const waterVolumeAddSchema = Joi.object({
 });
 
 export const waterVolumeUpdateSchema = Joi.object({
-  waterVolume: Joi.number().min(1).max(500),
+  waterVolume: Joi.number().min(1).max(5000),
   date: Joi.string().pattern(dateRegexp),
 });
 
