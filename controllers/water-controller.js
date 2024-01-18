@@ -19,9 +19,9 @@ const updateWaterById = async (req, res) => {
     { _id: waterId, owner },
     req.body
   );
-  res.json(result);
-  if (error) {
-    throw HttpError(404);
+
+  if (!result) {
+    throw HttpError(404, "Data not updated");
   }
   res.json(result);
 };
@@ -30,7 +30,16 @@ const addWater = async (req, res) => {
   const { _id: owner } = req.user;
 
   const result = await Water.create({ ...req.body, owner });
-  res.status(201).json(result);
+
+  if (!result) {
+    throw HttpError(404, "No data added");
+  }
+
+  res.status(201).json({
+    waterVolume: result.waterVolume,
+    date: result.date,
+    _id: result._id,
+  });
 };
 
 const deleteWaterById = async (req, res) => {
@@ -38,7 +47,7 @@ const deleteWaterById = async (req, res) => {
   const { waterId } = req.params;
   const result = await Water.findOneAndDelete({ _id: waterId, owner });
   if (!result) {
-    throw HttpError(404);
+    throw HttpError(404, "Data not deleted");
   }
   res.json({
     message: "Water deleted",
