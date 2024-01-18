@@ -6,7 +6,6 @@ import isValidId from "../../middlewares/isValidId.js";
 import {
   waterVolumeAddSchema,
   waterVolumeUpdateSchema,
-  userWaterMonthShema,
 } from "../../models/waters.js";
 
 export const watersRouter = express.Router();
@@ -16,9 +15,7 @@ watersRouter.use(authenticate);
 watersRouter.get("/userwaterday", watersController.waterUserDay);
 
 watersRouter.get(
-  "/userwatermonth",
-  isEmptyBody,
-  validateBody(userWaterMonthShema),
+  "/userwatermonth/:year/:month",
   watersController.waterUserMonth
 );
 
