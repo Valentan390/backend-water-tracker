@@ -42,14 +42,14 @@ export const waterVolumeUpdateSchema = Joi.object({
   date: Joi.string().pattern(dateRegexp),
 });
 
-export const userWaterMonthShema = Joi.object({
-  year: Joi.string()
-    .pattern(/^(19|20)\d{2}$/)
-    .required(),
-  month: Joi.string()
-    .pattern(/^(0[1-9]|1[0-2])$/)
-    .required(),
-});
+// export const userWaterMonthShema = Joi.object({
+//   year: Joi.string()
+//     .pattern(/^(19|20)\d{2}$/)
+//     .required(),
+//   month: Joi.string()
+//     .pattern(/^(0[1-9]|1[0-2])$/)
+//     .required(),
+// });
 
 const Water = model("waters", waterSchema);
 

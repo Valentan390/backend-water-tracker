@@ -50,68 +50,122 @@ const waterUserDay = async (req, res) => {
 
   const currentDate = moment().startOf("day");
 
-  const userWaterDay = await Water.find({
-    owner,
-    createdAt: { $gte: currentDate },
-  });
+  const userWaterDay = await Water.aggregate([
+    {
+      $match: {
+        owner,
+        createdAt: { $gte: currentDate.toDate() },
+      },
+    },
+    {
+      $group: {
+        _id: null,
+        totalWaterVolume: { $sum: "$waterVolume" },
+        waterEntries: { $push: "$$ROOT" },
+      },
+    },
+    {
+      $project: {
+        _id: 0,
+        percentDailyNormaUser: {
+          $round: [
+            {
+              $multiply: [{ $divide: ["$totalWaterVolume", dailyNorma] }, 100],
+            },
+          ],
+        },
+        userWaterDay: "$waterEntries",
+      },
+    },
+  ]);
 
-  const totalWaterDayUser = userWaterDay.reduce(
-    (sum, drunkwater) => sum + drunkwater.waterVolume,
-    0
-  );
+  if (userWaterDay.length === 0) {
+    return res.status(200).json({
+      percentDailyNormaUser: 0,
+      userWaterDay: [],
+    });
+  }
 
-  const percentDailyNormaUser = Math.round(
-    (totalWaterDayUser / dailyNorma) * 100
-  );
+  if (!userWaterDay) {
+    throw HttpError(400, "Error while performing aggregation in database");
+  }
 
-  res.status(200).json({
-    percentDailyNormaUser,
-    userWaterDay,
-  });
+  res.status(200).json(userWaterDay[0]);
 };
 
 const waterUserMonth = async (req, res) => {
   const { _id: owner, dailyNorma } = req.user;
-  const { year, month } = req.body;
+  const { year, month } = req.params;
+
+  if (
+    !/^\d{4}$/.test(year) ||
+    !/^\d{1,2}$/.test(month) ||
+    parseInt(month) < 1 ||
+    parseInt(month) > 12
+  ) {
+    throw HttpError(400, "Incorrect year or month values");
+  }
 
   const startDate = moment(`${year}-${month}-01`).startOf("month");
   const endDate = moment(startDate).endOf("month");
 
-  const dailyRecords = await Water.find({
-    owner,
-    createdAt: { $gte: startDate, $lte: endDate },
-  });
+  const dailySummary = await Water.aggregate([
+    {
+      $match: {
+        owner,
+        createdAt: { $gte: startDate.toDate(), $lte: endDate.toDate() },
+      },
+    },
+    {
+      $group: {
+        _id: { day: { $dayOfMonth: "$createdAt" } },
+        totalVolume: { $sum: "$waterVolume" },
+        count: { $sum: 1 },
+      },
+    },
+    {
+      $sort: { "_id.day": 1 },
+    },
+    {
+      $project: {
+        _id: 0,
+        date: {
+          $dateFromParts: {
+            year: { $toInt: year },
+            month: { $toInt: month },
+            day: "$_id.day",
+          },
+        },
+        dailyNorm: `${dailyNorma}`,
+        percentDailyNorm: {
+          $min: [
+            100,
+            {
+              $round: [
+                {
+                  $multiply: [{ $divide: ["$totalVolume", dailyNorma] }, 100],
+                },
+              ],
+            },
+          ],
+        },
+        consumptionCount: "$count",
+      },
+    },
+  ]);
 
-  const groupedRecords = {};
-
-  dailyRecords.forEach((record) => {
-    const dayOfMonth = moment(record.createdAt).format("D");
-
-    if (!groupedRecords[dayOfMonth]) {
-      groupedRecords[dayOfMonth] = {
-        totalVolume: 0,
-        count: 0,
-      };
-    }
-
-    groupedRecords[dayOfMonth].totalVolume += record.waterVolume;
-    groupedRecords[dayOfMonth].count += 1;
-  });
-
-  const dailySummary = Object.keys(groupedRecords).map((day) => {
-    const dayRecord = groupedRecords[day];
-
-    const percentDailyNorm = Math.round(
-      (dayRecord.totalVolume / dailyNorma) * 100
-    );
-
-    return {
-      date: moment(`${year}-${month}-${day}`, "YYYY-MM-D"),
+  if (dailySummary.length === 0) {
+    return res.status(200).json({
+      percentDailyNorm: 0,
+      consumptionCount: 0,
       dailyNorm: dailyNorma,
-      percentDailyNorm: Math.min(100, percentDailyNorm),
-      consumptionCount: dayRecord.count,
-    };
-  });
+      date: 0,
+    });
+  }
+
+  if (!dailySummary) {
+    throw HttpError(400, "Error while performing aggregation in database");
+  }
 
   res.status(200).json(dailySummary);
 };
