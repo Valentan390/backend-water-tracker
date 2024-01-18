@@ -7,6 +7,7 @@ import {
   waterVolumeAddSchema,
   waterVolumeUpdateSchema,
 } from "../../models/waters.js";
+import isValidYearAndMonth from "../../middlewares/isValidYearAndMonth.js";
 
 export const watersRouter = express.Router();
 
@@ -16,6 +17,7 @@ watersRouter.get("/userwaterday", watersController.waterUserDay);
 
 watersRouter.get(
   "/userwatermonth/:year/:month",
+  isValidYearAndMonth,
   watersController.waterUserMonth
 );
 

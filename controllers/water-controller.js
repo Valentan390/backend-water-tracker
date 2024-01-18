@@ -23,7 +23,11 @@ const updateWaterById = async (req, res) => {
   if (!result) {
     throw HttpError(404, "Data not updated");
   }
-  res.json(result);
+  res.json({
+    waterVolume: result.waterVolume,
+    date: result.date,
+    _id: result._id,
+  });
 };
 
 const addWater = async (req, res) => {
@@ -83,7 +87,39 @@ const waterUserDay = async (req, res) => {
             },
           ],
         },
-        userWaterDay: "$waterEntries",
+        userWaterDay: {
+          $map: {
+            input: "$waterEntries",
+            as: "entry",
+            in: {
+              _id: "$$entry._id",
+              waterVolume: "$$entry.waterVolume",
+              date: { $toDate: "$$entry.date" },
+            },
+          },
+        },
+      },
+    },
+    {
+      $unwind: "$userWaterDay",
+    },
+    {
+      $sort: {
+        "userWaterDay.date": 1,
+      },
+    },
+    {
+      $group: {
+        _id: null,
+        percentDailyNormaUser: { $first: "$percentDailyNormaUser" },
+        userWaterDay: { $push: "$userWaterDay" },
+      },
+    },
+    {
+      $project: {
+        _id: 0,
+        percentDailyNormaUser: 1,
+        userWaterDay: 1,
       },
     },
   ]);
