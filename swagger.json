@@ -291,19 +291,13 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "properties": {
-                    "percentDailyNormaUser": {
-                      "type": "number",
-                      "example": 200
-                    },
-                    "userWaterDay": {
-                      "type": "number",
-                      "example": 200
-                    }
-                  }
+                  "$ref": "#/components/schemas/UserWaterDayResponse"
                 }
               }
             }
+          },
+          "400": {
+            "description": "Error while performing aggregation in database"
           },
           "401": {
             "description": "Unauthorized | Authorization header not defined | user not found "
@@ -314,23 +308,27 @@
         }
       }
     },
-    "/api/waters/userwatermonth": {
+    "/api/waters/userwatermonth/{year}/{month}": {
       "get": {
         "tags": ["Water"],
         "summary": "Get amount of consumed water for the selected month",
-        "parameters": [],
-        "security": [{ "Bearer": [] }],
-        "requestBody": {
-          "description": "Selected year and month",
-          "required": true,
-          "content": {
-            "application/json": {
-              "schema": {
-                "$ref": "#/components/schemas/WaterMonthRequest"
-              }
-            }
+        "parameters": [
+          {
+            "in": "path",
+            "name": "year",
+            "required": true,
+            "description": "Year in YYYY format",
+            "type": "string"
+          },
+          {
+            "in": "path",
+            "name": "month",
+            "required": true,
+            "description": "The month of the water consumption data, in MM format",
+            "type": "string"
           }
-        },
+        ],
+        "security": [{ "Bearer": [] }],
         "responses": {
           "200": {
             "description": "Succesful operation",
@@ -339,14 +337,14 @@
                 "schema": {
                   "type": "array",
                   "items": {
-                    "$ref": "#/components/schemas/WaterMonthResponse"
+                    "$ref": "#/components/schemas/UserWaterMonthResponse"
                   }
                 }
               }
             }
           },
           "400": {
-            "description": "Bad Request | Body must have fields "
+            "description": "Bad Request | Incorrect year or month values | Error while performing aggregation in database"
           },
           "401": {
             "description": "Unauthorized | Authorization header not defined | user not found"
@@ -393,6 +391,92 @@
           },
           "404": {
             "description": "Not Found"
+          }
+        }
+      }
+    },
+    "/api/waters/{waterId}": {
+      "patch": {
+        "tags": ["Water"],
+        "summary": "Update water data by id",
+        "parameters": [
+          {
+            "name": "waterId",
+            "in": "path",
+            "required": true,
+            "type": "string",
+            "description": "ID of the water entry"
+          }
+        ],
+        "security": [{ "Bearer": [] }],
+        "requestBody": {
+          "description": "Your new water data",
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/UpdateWaterRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Succesful operation",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/UpdateWaterResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request | Body must have fields"
+          },
+          "401": {
+            "description": "Unauthorized | Authorization header not defined | user not found"
+          },
+          "404": {
+            "description": "Not Found | not valid id"
+          }
+        }
+      },
+      "delete": {
+        "tags": ["Water"],
+        "summary": "Delete water data by id",
+        "parameters": [
+          {
+            "name": "waterId",
+            "in": "path",
+            "required": true,
+            "type": "string",
+            "description": "ID of the water entry"
+          }
+        ],
+        "security": [{ "Bearer": [] }],
+        "responses": {
+          "200": {
+            "description": "Succesful operation",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "message": {
+                      "type": "string",
+                      "example": "Water deleted"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized | Authorization header not defined | user not found"
+          },
+          "404": {
+            "description": "Not Found | not valid id"
           }
         }
       }
@@ -615,7 +699,7 @@
             "description": "User's daily norma",
             "example": 200,
             "minimum": 1,
-            "maximum": 1500
+            "maximum": 15000
           }
         }
       },
@@ -624,41 +708,61 @@
         "properties": {
           "dailyNorma": {
             "type": "number",
-            "example": 200
+            "example": 1500
           }
         }
       },
-      "WaterMonthRequest": {
+      "UserWaterDayResponse": {
         "type": "object",
-        "required": ["year", "month"],
         "properties": {
-          "year": {
-            "type": "string",
-            "pattern": "^(19|20)\\d{2}$",
-            "example": "2024"
+          "percentDailyNormaUser": {
+            "type": "number",
+            "description": "Percentage of daily water consumption norm",
+            "example": 70
           },
-          "month": {
-            "type": "string",
-            "pattern": "^(0[1-9]|1[0-2])$",
-            "example": "01"
+          "userWaterDay": {
+            "type": "array",
+            "description": "Array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "_id": {
+                  "type": "string",
+                  "description": "Unique identifier"
+                },
+                "waterVolume": {
+                  "type": "number",
+                  "example": 250
+                },
+                "date": {
+                  "type": "string",
+                  "example": "2024-01-17T08:30:45.123Z",
+                  "pattern": "^d{4}-d{2}-d{2}Td{2}:d{2}:d{2}.d{3}Z$",
+                  "description": "The date and time of the water data"
+                }
+              }
+            }
           }
         }
       },
-      "WaterMonthResponse": {
+      "UserWaterMonthResponse": {
         "type": "object",
         "properties": {
-          "date": {
-            "type": "string",
-            "format": "date"
-          },
-          "dailyNorm": {
-            "type": "number"
-          },
           "percentDailyNorm": {
-            "type": "number"
+            "type": "number",
+            "example": 70
           },
           "consumptionCount": {
-            "type": "integer"
+            "type": "number",
+            "example": 3
+          },
+          "dailyNorma": {
+            "type": "number",
+            "example": 1000
+          },
+          "date": {
+            "type": "string",
+            "example": "2024-01-01"
           }
         }
       },
@@ -669,7 +773,7 @@
           "waterVolume": {
             "type": "number",
             "minimum": 1,
-            "maximum": 500
+            "maximum": 5000
           },
           "date": {
             "type": "string",
@@ -685,7 +789,7 @@
           "waterVolume": {
             "type": "number",
             "minimum": 1,
-            "maximum": 500
+            "maximum": 5000
           },
           "date": {
             "type": "string",
@@ -695,6 +799,38 @@
           "owner": {
             "type": "string",
             "description": "The owner's ID"
+          }
+        }
+      },
+      "UpdateWaterRequest": {
+        "type": "object",
+        "properties": {
+          "waterVolume": {
+            "type": "number",
+            "minimum": 1,
+            "maximum": 5000
+          },
+          "date": {
+            "type": "string",
+            "example": "2024-01-17T08:30:45.123Z",
+            "pattern": "^d{4}-d{2}-d{2}Td{2}:d{2}:d{2}.d{3}Z$",
+            "description": "The date and time of the water data"
+          }
+        }
+      },
+      "UpdateWaterResponse": {
+        "type": "object",
+        "properties": {
+          "waterVolume": {
+            "type": "number",
+            "minimum": 1,
+            "maximum": 5000
+          },
+          "date": {
+            "type": "string",
+            "example": "2024-01-17T08:30:45.123Z",
+            "pattern": "^d{4}-d{2}-d{2}Td{2}:d{2}:d{2}.d{3}Z$",
+            "description": "The date and time of the water data"
           }
         }
       }
