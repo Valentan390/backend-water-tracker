@@ -390,7 +390,7 @@
             "description": "Unauthorized | Authorization header not defined | user not found"
           },
           "404": {
-            "description": "Not Found"
+            "description": "Not Found | No data added"
           }
         }
       }
@@ -438,7 +438,7 @@
             "description": "Unauthorized | Authorization header not defined | user not found"
           },
           "404": {
-            "description": "Not Found | not valid id"
+            "description": "Not Found | not valid id | Data not updated"
           }
         }
       },
@@ -476,7 +476,7 @@
             "description": "Unauthorized | Authorization header not defined | user not found"
           },
           "404": {
-            "description": "Not Found | not valid id"
+            "description": "Not Found | not valid id | Data not deleted"
           }
         }
       }
@@ -796,7 +796,7 @@
             "example": "2024-01-17T08:30:45.123Z",
             "pattern": "^d{4}-d{2}-d{2}Td{2}:d{2}:d{2}.d{3}Z$"
           },
-          "owner": {
+          "_id": {
             "type": "string",
             "description": "The owner's ID"
           }
