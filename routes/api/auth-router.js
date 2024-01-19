@@ -37,7 +37,7 @@ authRouter.post(
   authController.forgotPassword
 );
 
-authRouter.patch(
+authRouter.post(
   "/reset-password",
   isEmptyBody,
   validateBody(userResetPasswordSchema),
