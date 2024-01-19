@@ -29,7 +29,7 @@ const userSchema = new Schema(
     },
     dailyNorma: {
       type: Number,
-      default: 20000,
+      default: 2000,
     },
     token: {
       type: String,
@@ -38,16 +38,16 @@ const userSchema = new Schema(
       type: String,
     },
 
-    verify: {
-      type: Boolean,
-      default: false,
-    },
-
-    verificationCode: {
+    resetToken: {
       type: String,
       default: "",
     },
+
+    resetTokenExpiration: {
+      type: Date,
+    },
   },
+
   { versionKey: false, timestamps: true }
 );
 
@@ -68,9 +68,9 @@ export const userSigninSchema = Joi.object({
   password: Joi.string().min(8).max(64).required(),
 });
 
-// export const userEmailSchema = Joi.object({
-//   email: Joi.string().pattern(emailRegexp).required(),
-// });
+export const userEmailSchema = Joi.object({
+  email: Joi.string().pattern(emailRegexp).required(),
+});
 
 export const userUpdateSchema = Joi.object({
   username: Joi.string().min(3),
@@ -84,9 +84,10 @@ export const userDailyNormaSchema = Joi.object({
   dailyNorma: Joi.number().min(1).max(15000).required(),
 });
 
-// const avatarUpdateValidation = Joi.object({
-//   avatar: Joi.any().required(),
-// });
+export const userResetPasswordSchema = Joi.object({
+  resetToken: Joi.string().required(),
+  newPassword: Joi.string().min(8).max(64).required(),
+});
 
 const User = model("user", userSchema);
 
