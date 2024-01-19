@@ -183,7 +183,7 @@
       }
     },
     "/api/auth/reset-password": {
-      "post": {
+      "patch": {
         "tags": ["Auth"],
         "summary": "Reset your password",
         "parameters": [],
