@@ -130,6 +130,116 @@
         }
       }
     },
+    "/api/auth/restore-password": {
+      "post": {
+        "tags": ["Auth"],
+        "summary": "Restore your password",
+        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "required": ["email"],
+                "properties": {
+                  "email": {
+                    "type": "string",
+                    "description": "User's email",
+                    "format": "email"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Succesful operation",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "message": {
+                      "type": "string",
+                      "example": "Password reset link has been sent to your email"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad request | Body must have fields"
+          },
+          "401": {
+            "description": "Email or password invalid | Email not found"
+          },
+          "404": {
+            "description": "Not found | User not found"
+          }
+        }
+      }
+    },
+    "/api/auth/reset-password": {
+      "post": {
+        "tags": ["Auth"],
+        "summary": "Reset your password",
+        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "required": ["resetToken", "newPassword"],
+                "properties": {
+                  "resetToken": {
+                    "type": "string",
+                    "description": "Your reset token"
+                  },
+                  "newPassword": {
+                    "type": "string",
+                    "description": "User's new password",
+                    "example": "pass12345",
+                    "minLength": 8,
+                    "maxLength": 64
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Succesful operation",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "message": {
+                      "type": "string",
+                      "example": "Password has been reset successfully"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad request | Body must have fields | Invalid or expired token"
+          },
+          "401": {
+            "description": "Email or password invalid | Email not found"
+          },
+          "404": {
+            "description": "Not found | User not found"
+          }
+        }
+      }
+    },
     "/api/users/current": {
       "get": {
         "tags": ["User"],
