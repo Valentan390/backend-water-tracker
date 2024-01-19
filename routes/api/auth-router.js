@@ -8,7 +8,8 @@ import authenticate from "../../middlewares/authenticate.js";
 import {
   userSignupSchema,
   userSigninSchema,
-  //   userEmailSchema,
+  userEmailSchema,
+  userResetPasswordSchema,
 } from "../../models/users.js";
 
 const authRouter = express.Router();
@@ -28,5 +29,19 @@ authRouter.post(
 );
 
 authRouter.post("/logout", authenticate, authController.signout);
+
+authRouter.post(
+  "/restore-password",
+  isEmptyBody,
+  validateBody(userEmailSchema),
+  authController.forgotPassword
+);
+
+authRouter.post(
+  "/reset-password",
+  isEmptyBody,
+  validateBody(userResetPasswordSchema),
+  authController.resetPassword
+);
 
 export default authRouter;

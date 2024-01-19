@@ -124,13 +124,6 @@ const waterUserDay = async (req, res) => {
     },
   ]);
 
-  if (userWaterDay.length === 0) {
-    return res.status(200).json({
-      percentDailyNormaUser: 0,
-      userWaterDay: [],
-    });
-  }
-
   if (!userWaterDay) {
     throw HttpError(400, "Error while performing aggregation in database");
   }
@@ -198,15 +191,6 @@ const waterUserMonth = async (req, res) => {
       },
     },
   ]);
-
-  if (dailySummary.length === 0) {
-    return res.status(200).json({
-      percentDailyNorm: 0,
-      consumptionCount: 0,
-      dailyNorm: dailyNorma,
-      date: 0,
-    });
-  }
 
   if (!dailySummary) {
     throw HttpError(400, "Error while performing aggregation in database");
