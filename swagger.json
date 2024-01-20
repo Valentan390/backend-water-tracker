@@ -183,7 +183,7 @@
       }
     },
     "/api/auth/reset-password": {
-      "patch": {
+      "post": {
         "tags": ["Auth"],
         "summary": "Reset your password",
         "parameters": [],
@@ -606,8 +606,7 @@
           },
           "email": {
             "type": "string",
-            "description": "User's email",
-            "format": "email"
+            "description": "User's email"
           },
           "password": {
             "type": "string",
@@ -832,7 +831,6 @@
           },
           "userWaterDay": {
             "type": "array",
-            "description": "Array",
             "items": {
               "type": "object",
               "properties": {
@@ -846,8 +844,6 @@
                 },
                 "date": {
                   "type": "string",
-                  "example": "2024-01-17T08:30:45.123Z",
-                  "pattern": "^d{4}-d{2}-d{2}Td{2}:d{2}:d{2}.d{3}Z$",
                   "description": "The date and time of the water data"
                 }
               }
