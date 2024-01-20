@@ -67,7 +67,7 @@ const waterUserDay = async (req, res) => {
     {
       $match: {
         owner,
-        date: { $gte: currentDate.toDate() },
+        createdAt: { $gte: currentDate.toDate() },
       },
     },
     {
