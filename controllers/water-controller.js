@@ -138,8 +138,6 @@ const waterUserMonth = async (req, res) => {
   const startDate = moment(`${year}-${month}-01`).startOf("month");
   const endDate = moment(startDate).endOf("month");
 
-  console.log(startDate.toDate());
-
   const dailySummary = await Water.aggregate([
     {
       $match: {
