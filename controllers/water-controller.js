@@ -33,7 +33,15 @@ const updateWaterById = async (req, res) => {
 const addWater = async (req, res) => {
   const { _id: owner } = req.user;
 
-  const result = await Water.create({ ...req.body, owner });
+  const { waterVolume, date } = req.body;
+
+  const formattedDate = moment(date).format("YYYY-MM-DDTHH:mm:ss.SSSZ");
+
+  const result = await Water.create({
+    waterVolume,
+    date: formattedDate,
+    owner,
+  });
 
   if (!result) {
     throw HttpError(404, "No data added");
@@ -67,7 +75,7 @@ const waterUserDay = async (req, res) => {
     {
       $match: {
         owner,
-        createdAt: { $gte: currentDate.toDate() },
+        date: { $gte: currentDate.toDate() },
       },
     },
     {
