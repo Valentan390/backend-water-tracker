@@ -135,22 +135,16 @@ const waterUserMonth = async (req, res) => {
   const { _id: owner, dailyNorma } = req.user;
   const { year, month } = req.params;
 
-  if (
-    !/^\d{4}$/.test(year) ||
-    !/^\d{1,2}$/.test(month) ||
-    parseInt(month) < 1 ||
-    parseInt(month) > 12
-  ) {
-    throw HttpError(400, "Incorrect year or month values");
-  }
-
   const startDate = moment(`${year}-${month}-01`).startOf("month");
   const endDate = moment(startDate).endOf("month");
+
+  console.log(startDate.toDate());
 
   const dailySummary = await Water.aggregate([
     {
       $match: {
         owner,
+
         createdAt: { $gte: startDate.toDate(), $lte: endDate.toDate() },
       },
     },
@@ -176,14 +170,9 @@ const waterUserMonth = async (req, res) => {
         },
         dailyNorm: `${dailyNorma}`,
         percentDailyNorm: {
-          $min: [
-            100,
+          $round: [
             {
-              $round: [
-                {
-                  $multiply: [{ $divide: ["$totalVolume", dailyNorma] }, 100],
-                },
-              ],
+              $multiply: [{ $divide: ["$totalVolume", dailyNorma] }, 100],
             },
           ],
         },
