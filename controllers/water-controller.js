@@ -105,7 +105,7 @@ const waterUserDay = async (req, res) => {
     },
     {
       $sort: {
-        "userWaterDay.date": 1,
+        "userWaterDay.date": -1,
       },
     },
     {
