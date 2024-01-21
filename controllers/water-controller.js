@@ -4,14 +4,6 @@ import { HttpError } from "../helpers/HttpError.js";
 import { ctrlWrapper } from "../helpers/ctrlWrapper.js";
 import moment from "moment";
 
-const getAll = async (req, res) => {
-  const { _id: owner } = req.user;
-  const result = await Water.find({ owner }, "-createdAt -updatedAt");
-  res.json({
-    result,
-  });
-};
-
 const updateWaterById = async (req, res) => {
   const { _id: owner } = req.user;
   const { waterId } = req.params;
@@ -194,7 +186,6 @@ export default {
   updateWaterById: ctrlWrapper(updateWaterById),
   addWater: ctrlWrapper(addWater),
   deleteWaterById: ctrlWrapper(deleteWaterById),
-  getAll: ctrlWrapper(getAll),
   waterUserDay: ctrlWrapper(waterUserDay),
   waterUserMonth: ctrlWrapper(waterUserMonth),
 };

@@ -38,6 +38,4 @@ watersRouter.patch(
 
 watersRouter.delete("/:waterId", isValidId, watersController.deleteWaterById);
 
-watersRouter.get("/", watersController.getAll);
-
 export default watersRouter;
