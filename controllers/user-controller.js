@@ -81,8 +81,8 @@ const updateUser = async (req, res) => {
     result: {
       email: result.email,
       username: result.username,
-      avatarURL: result.avatarURL,
-      dailyNorma: result.dailyNorma,
+      //   avatarURL: result.avatarURL,
+      //   dailyNorma: result.dailyNorma,
       gender: result.gender,
     },
   });
