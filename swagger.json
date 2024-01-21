@@ -782,16 +782,6 @@
             "example": "example_username12345",
             "description": "User's username"
           },
-          "avatarURL": {
-            "type": "string",
-            "description": "URL of the user's avatar",
-            "example": "example_avatar.png"
-          },
-          "dailyNorma": {
-            "type": "number",
-            "description": "User's daily norma",
-            "example": 100
-          },
           "gender": {
             "type": "string",
             "enum": ["woman", "man"],
