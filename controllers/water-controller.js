@@ -24,18 +24,27 @@ const updateWaterById = async (req, res) => {
 
 const addWater = async (req, res) => {
   const { _id: owner } = req.user;
+  try {
+    const result = await Water.create({ ...req.body, owner });
+    const monthYear = {
+      year: moment(result.date).year().toString(),
+      month: (moment(result.date).month() + 1).toString().padStart(2, 0),
+    };
 
-  const result = await Water.create({ ...req.body, owner });
+    const dayWater = await waterUserDayLogic(req, res);
+    const monthWater = await waterUserMonthLogic(
+      { ...req, params: monthYear },
+      res
+    );
 
-  if (!result) {
-    throw HttpError(404, "No data added");
+    res.status(201).json({
+      monthWaterUser: monthWater,
+      dayWaterUser: dayWater,
+    });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ error: "Внутренняя ошибка сервера" });
   }
-
-  res.status(201).json({
-    waterVolume: result.waterVolume,
-    date: result.date,
-    _id: result._id,
-  });
 };
 
 const deleteWaterById = async (req, res) => {
@@ -50,7 +59,7 @@ const deleteWaterById = async (req, res) => {
   });
 };
 
-const waterUserDay = async (req, res) => {
+const waterUserDayLogic = async (req, res) => {
   const { _id: owner, dailyNorma } = req.user;
 
   const currentDate = moment().startOf("day").add(2, "hours");
@@ -120,14 +129,24 @@ const waterUserDay = async (req, res) => {
     },
   ]);
 
-  if (!userWaterDay) {
+  if (!userWaterDay || userWaterDay.length === 0) {
     throw HttpError(400, "Error while performing aggregation in database");
   }
-
-  res.status(200).json(userWaterDay[0]);
+  return userWaterDay[0];
 };
 
-const waterUserMonth = async (req, res) => {
+const waterUserDay = async (req, res) => {
+  try {
+    const result = await waterUserDayLogic(req);
+
+    res.status(200).json(result);
+  } catch (error) {
+    console.error(error);
+    throw HttpError(400, "Error while performing aggregation in database");
+  }
+};
+
+const waterUserMonthLogic = async (req, res) => {
   const { _id: owner, dailyNorma } = req.user;
   const { year, month } = req.params;
 
@@ -179,7 +198,20 @@ const waterUserMonth = async (req, res) => {
     throw HttpError(400, "Error while performing aggregation in database");
   }
 
-  res.status(200).json(dailySummary);
+  return dailySummary;
+
+  // res.status(200).json(dailySummary);
+};
+
+const waterUserMonth = async (req, res) => {
+  try {
+    const result = await waterUserMonthLogic(req);
+
+    res.status(200).json(result);
+  } catch (error) {
+    console.error(error);
+    throw HttpError(400, "Error while performing aggregation in database");
+  }
 };
 
 export default {
