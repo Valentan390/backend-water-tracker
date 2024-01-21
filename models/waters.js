@@ -12,9 +12,10 @@ const waterSchema = new Schema(
       minlength: 1,
       maxlength: 500,
     },
+
     date: {
-      type: String,
-      required: [true, "Date is required"],
+      type: Date,
+      required: true,
       match: dateRegexp,
     },
 
