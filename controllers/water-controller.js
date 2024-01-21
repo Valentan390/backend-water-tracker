@@ -61,13 +61,17 @@ const deleteWaterById = async (req, res) => {
 const waterUserDay = async (req, res) => {
   const { _id: owner, dailyNorma } = req.user;
 
-  const currentDate = moment().startOf("day");
+  const currentDate = moment().startOf("day").add(2, "hours");
+  const endOfDay = moment().endOf("day").add(2, "hours");
 
   const userWaterDay = await Water.aggregate([
     {
       $match: {
         owner,
-        createdAt: { $gte: currentDate.toDate() },
+        date: {
+          $gte: currentDate.toDate(),
+          $lte: endOfDay.toDate(),
+        },
       },
     },
     {
@@ -143,12 +147,12 @@ const waterUserMonth = async (req, res) => {
       $match: {
         owner,
 
-        createdAt: { $gte: startDate.toDate(), $lte: endDate.toDate() },
+        date: { $gte: startDate.toDate(), $lte: endDate.toDate() },
       },
     },
     {
       $group: {
-        _id: { day: { $dayOfMonth: "$createdAt" } },
+        _id: { day: { $dayOfMonth: "$date" } },
         totalVolume: { $sum: "$waterVolume" },
         count: { $sum: 1 },
       },
