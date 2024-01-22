@@ -2,8 +2,9 @@ import fs from "fs/promises";
 import jimp from "jimp";
 import cloudinary from "../helpers/cloudinary.js";
 import bcrypt from "bcrypt";
-
+import watersController from "./water-controller.js";
 import User from "../models/users.js";
+
 import { ctrlWrapper } from "../helpers/ctrlWrapper.js";
 import { HttpError } from "../helpers/HttpError.js";
 
@@ -92,17 +93,20 @@ const updateUserDailyNorm = async (req, res) => {
   const { _id } = req.user;
   const { dailyNorma } = req.body;
 
-  const updatedUser = await User.findByIdAndUpdate(_id, {
-    dailyNorma,
-  });
+  try {
+    const updatedUser = await User.findByIdAndUpdate(_id, {
+      dailyNorma,
+    });
+    const dayWater = await watersController.waterUserDayLogic(req, res);
 
-  if (!updatedUser) {
-    throw HttpError(404, "Not found");
+    res.status(201).json({
+      dailyNorma: updatedUser.dailyNorma,
+      dayWaterUserPercentage: dayWater.percentDailyNormaUser,
+    });
+  } catch (error) {
+    console.error(error);
+    throw HttpError(404, "Data not updated");
   }
-
-  res.json({
-    dailyNorma: updatedUser.dailyNorma,
-  });
 };
 
 export default {
