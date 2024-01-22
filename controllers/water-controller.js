@@ -149,8 +149,9 @@ const waterUserDayLogic = async (req, res) => {
   ]);
 
   if (!userWaterDay || userWaterDay.length === 0) {
-    throw HttpError(400, "Error while performing aggregation in database");
+    userWaterDay[0] = [];
   }
+
   return userWaterDay[0];
 };
 
@@ -212,11 +213,11 @@ const waterUserMonthLogic = async (req, res) => {
       },
     },
   ]);
+  
 
   if (!dailySummary) {
-    throw HttpError(400, "Error while performing aggregation in database");
+    dailySummary = [];
   }
-
   return dailySummary;
 };
 
@@ -237,4 +238,5 @@ export default {
   deleteWaterById: ctrlWrapper(deleteWaterById),
   waterUserDay: ctrlWrapper(waterUserDay),
   waterUserMonth: ctrlWrapper(waterUserMonth),
+  waterUserDayLogic: waterUserDayLogic,
 };
