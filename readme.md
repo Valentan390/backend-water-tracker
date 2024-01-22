@@ -1,10 +1,10 @@
-###Water Tracker Backend
+### Water Tracker Backend
 
 Це репозиторій бекенду для веб-додатка, призначеного для ведення обліку кількості випитої води користувачем протягом дня, місяця та року.
 
 ![About](Welcome.png)
 
-##Технології:
+## Технології:
 
 У даному проекті використані такі технології та бібліотеки:
 
@@ -18,21 +18,21 @@ Gravatar: Забезпечує можливість отримання ават�
 NodeMailer: Бібліотека для відправки електронних листів через Node.js.
 Cloudinary: Сервіс для зберігання та опрацювання мультимедійного вмісту у хмарі.
 
-##API Документація
+## API Документація
 
 Документація API доступна за посиланням Swagger Documentation [Swagger Documentation](https://backend-water-tracker.onrender.com/api-docs/#/).
 
-##Завдання
+## Завдання
 
 Проект створений для полегшення ведення обліку випитої води. Вам також доступні інші можливості, такі як завантаження аватару, налаштування особистого кабінету та інші.
 
-###Water Tracker Backend
+### Water Tracker Backend
 
 This is the backend repository for a web application designed to track the amount of water consumed by users on a daily, monthly, and yearly basis.
 
 ![About](Welcome.png)
 
-##Technologies:
+## Technologies:
 
 The project utilizes the following technologies and libraries:
 
@@ -46,10 +46,10 @@ Gravatar: Provides the ability to fetch avatars based on email addresses.
 NodeMailer: A library for sending emails using Node.js.
 Cloudinary: A service for storing and processing multimedia content in the cloud.
 
-##API Documentation
+## API Documentation
 
 API documentation is available at Swagger Documentation [Swagger Documentation](https://backend-water-tracker.onrender.com/api-docs/#/) when the server is running.
 
-##Tasks
+## Tasks
 
 The project is created to facilitate tracking of water consumption. You also have additional features such as uploading avatars, personal account settings, and more.
