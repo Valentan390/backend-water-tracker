@@ -51,7 +51,7 @@ const signin = async (req, res) => {
     id,
   };
 
-  const token = jwt.sign(payload, JWT_SECRET, { expiresIn: "24h" });
+  const token = jwt.sign(payload, JWT_SECRET, { expiresIn: "0.1h" });
 
   await User.findByIdAndUpdate(id, { token });
 
