@@ -9,7 +9,7 @@ import { HttpError } from "../helpers/HttpError.js";
 import sendEmail from "../helpers/sendEmail.js";
 import resetPasswordEmail from "../helpers/resetPasswordEmail.js";
 
-const { JWT_SECRET, BASE_URL } = process.env;
+const { JWT_SECRET, BASE_URL, BASE_URL_NEW } = process.env;
 
 const signup = async (req, res) => {
   const { email, password } = req.body;
@@ -117,6 +117,47 @@ const forgotPassword = async (req, res) => {
     .json({ message: "Password reset link has been sent to your email" });
 };
 
+const changePassword = async (req, res) => {
+  const { email } = req.body;
+
+  console.log(email);
+
+  const user = await User.findOne({ email });
+
+  if (!user) {
+    throw HttpError(401, "Email not found");
+  }
+
+  const resetToken = nanoid();
+  const resetTokenExpiration = Date.now() + 3600000;
+
+  const updatedUser = await User.findOneAndUpdate(
+    { email },
+    {
+      resetToken: resetToken,
+      resetTokenExpiration: resetTokenExpiration,
+    }
+  );
+
+  if (!updatedUser) {
+    throw HttpError(404, "User not found");
+  }
+
+  const userName = updatedUser.username;
+
+  const resetLink = `${BASE_URL_NEW}/update-password?resetToken=${resetToken}`;
+
+  await sendEmail({
+    to: email,
+    subject: "Password Reset",
+    html: resetPasswordEmail(BASE_URL_NEW, resetLink, userName),
+  });
+
+  res
+    .status(200)
+    .json({ message: "Password reset link has been sent to your email" });
+};
+
 const resetPassword = async (req, res) => {
   const { resetToken, newPassword } = req.body;
   const hashedPassword = await bcrypt.hash(newPassword, 10);
@@ -149,5 +190,6 @@ export default {
   signin: ctrlWrapper(signin),
   signout: ctrlWrapper(signout),
   forgotPassword: ctrlWrapper(forgotPassword),
+  changePassword: ctrlWrapper(changePassword),
   resetPassword: ctrlWrapper(resetPassword),
 };

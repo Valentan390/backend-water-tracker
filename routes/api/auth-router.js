@@ -44,4 +44,11 @@ authRouter.post(
   authController.resetPassword
 );
 
+authRouter.post(
+  "/change-password",
+  isEmptyBody,
+  validateBody(userEmailSchema),
+  authController.changePassword
+);
+
 export default authRouter;
